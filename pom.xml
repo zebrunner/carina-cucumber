@@ -12,8 +12,9 @@
 	<parent>
 		<groupId>com.qaprosoft</groupId>
 		<artifactId>carina</artifactId>
-		<version>6.1.560-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<!-- TODO: switch to RELEASE version -->
+		<!--version>RELEASE</version-->
+		<version>6.1.25-SNAPSHOT</version>
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
