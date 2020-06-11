@@ -15,10 +15,12 @@
  *******************************************************************************/
 package com.qaprosoft.carina.core.foundation.cucumber;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
+import com.qaprosoft.carina.core.foundation.AbstractTest;
+import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
+import com.qaprosoft.carina.core.foundation.report.ReportContext;
+import com.qaprosoft.carina.core.foundation.utils.Configuration;
+
+import net.masterthought.cucumber.ReportBuilder;
 
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
@@ -27,14 +29,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.qaprosoft.carina.core.foundation.AbstractTest;
-import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
-import com.qaprosoft.carina.core.foundation.report.ReportContext;
-import com.qaprosoft.carina.core.foundation.utils.Configuration;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 
-import cucumber.api.testng.CucumberFeatureWrapper;
-import cucumber.api.testng.TestNGCucumberRunner;
-import net.masterthought.cucumber.ReportBuilder;
+import io.cucumber.testng.PickleWrapper;
+import io.cucumber.testng.TestNGCucumberRunner;
 
 public abstract class CucumberRunner extends AbstractTest {
     private TestNGCucumberRunner testNGCucumberRunner;
@@ -44,7 +45,6 @@ public abstract class CucumberRunner extends AbstractTest {
     public CucumberRunner() {
         this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
     }
-    
 
     @BeforeClass(alwaysRun = true)
     public void setUpClass() throws Exception {
@@ -52,13 +52,22 @@ public abstract class CucumberRunner extends AbstractTest {
     }
 
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
-    public void feature(CucumberFeatureWrapper cucumberFeature) {
-        this.testNGCucumberRunner.runCucumber(cucumberFeature.getCucumberFeature());
+    public void feature(PickleWrapper pickleWrapper) {
+        this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
     }
 
     @DataProvider
     public Object[][] features() {
-        return this.testNGCucumberRunner.provideFeatures();
+        Object[][] scenarios = this.testNGCucumberRunner.provideScenarios();
+        Object[][] result = new Object[scenarios.length][1];
+        for (int i = 0; i < scenarios.length; i++) {
+            Object[] scenario = scenarios[i];
+            result[i] = new Object[1];
+            for (int j = 0; j < scenario.length; j++) {
+                result[i][0] = scenario[0];
+            }
+        }
+        return result;
     }
 
     @AfterClass
@@ -129,7 +138,7 @@ public abstract class CucumberRunner extends AbstractTest {
 
     /**
      * Check that CucumberReport Folder exists.
-     * 
+     *
      * @return boolean
      */
     public static boolean isCucumberReportFolderExists() {
@@ -149,8 +158,4 @@ public abstract class CucumberRunner extends AbstractTest {
         }
         return false;
     }
-    
-
-
-    
 }
