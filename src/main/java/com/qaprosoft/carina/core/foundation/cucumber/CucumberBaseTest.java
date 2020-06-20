@@ -24,9 +24,10 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import com.qaprosoft.carina.core.foundation.webdriver.CarinaDriver;
 import com.qaprosoft.carina.core.foundation.webdriver.Screenshot;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+
 
 public class CucumberBaseTest extends CucumberRunner {
 
@@ -62,12 +63,10 @@ public class CucumberBaseTest extends CucumberRunner {
                 if (drv instanceof EventFiringWebDriver) {
                     drv = ((EventFiringWebDriver) drv).getWrappedDriver();
                 }
-                
-                screenId = Screenshot.captureFailure(drv, driverName + ": " + scenario.getName()); // in case of failure
+
+                screenId = Screenshot.capture(drv, driverName + ": " + scenario.getName()); // in case of failure
                 LOGGER.debug("cucumber screenshot generated: " + screenId);
             }
-            
         }
-
     }
 }
