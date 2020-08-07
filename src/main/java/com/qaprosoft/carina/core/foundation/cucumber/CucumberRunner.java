@@ -15,12 +15,10 @@
  *******************************************************************************/
 package com.qaprosoft.carina.core.foundation.cucumber;
 
-import com.qaprosoft.carina.core.foundation.AbstractTest;
-import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
-import com.qaprosoft.carina.core.foundation.report.ReportContext;
-import com.qaprosoft.carina.core.foundation.utils.Configuration;
-
-import net.masterthought.cucumber.ReportBuilder;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
@@ -29,13 +27,16 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
+import com.qaprosoft.carina.core.foundation.AbstractTest;
+import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
+import com.qaprosoft.carina.core.foundation.listeners.TestNamingListener;
+import com.qaprosoft.carina.core.foundation.report.ReportContext;
+import com.qaprosoft.carina.core.foundation.utils.Configuration;
 
+import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
 import io.cucumber.testng.TestNGCucumberRunner;
+import net.masterthought.cucumber.ReportBuilder;
 
 public abstract class CucumberRunner extends AbstractTest {
     private TestNGCucumberRunner testNGCucumberRunner;
@@ -52,7 +53,8 @@ public abstract class CucumberRunner extends AbstractTest {
     }
 
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
-    public void feature(PickleWrapper pickleWrapper) {
+    public void feature(PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
+        TestNamingListener.setTestName(featureWrapper.toString());
         this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
     }
 
@@ -62,9 +64,10 @@ public abstract class CucumberRunner extends AbstractTest {
         Object[][] result = new Object[scenarios.length][1];
         for (int i = 0; i < scenarios.length; i++) {
             Object[] scenario = scenarios[i];
-            result[i] = new Object[1];
+            result[i] = new Object[2];
             for (int j = 0; j < scenario.length; j++) {
                 result[i][0] = scenario[0];
+                result[i][1] = scenario[1];
             }
         }
         return result;
