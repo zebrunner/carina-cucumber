@@ -56,7 +56,7 @@ public abstract class CucumberRunner extends AbstractTest {
         this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
     }
 
-    @DataProvider
+    @DataProvider(parallel = true)
     public Object[][] features() {
         Object[][] scenarios = this.testNGCucumberRunner.provideScenarios();
         Object[][] result = new Object[scenarios.length][1];
