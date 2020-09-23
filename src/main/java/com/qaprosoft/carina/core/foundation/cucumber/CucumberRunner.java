@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -47,7 +48,14 @@ public abstract class CucumberRunner extends AbstractTest {
 
     private final static String FEATURE_NAME_OPTIONAL = "Optional";
 
+    private final static String STR_FORMAT_TEST_NAME = "%s (%s)";
+    private final static String STR_FORMAT_TEST_FOLDER_NAME = "%s_%s";
+    private final static String EXAMPLE_FILE_NAME = "_ex";
+    private final static String EXAMPLE_TEST_NAME = " - EX";
+
     protected static final Logger LOGGER = Logger.getLogger(CucumberRunner.class);
+
+    List<String> testNamesList = Collections.synchronizedList(new ArrayList<String>());
 
     public CucumberRunner() {
         this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
@@ -61,7 +69,21 @@ public abstract class CucumberRunner extends AbstractTest {
 
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
     public void feature(PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
-        ReportContext.setCustomTestDirName(cleanQuotes(pickleWrapper.toString()));
+        final String testName = prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper);
+        List<Integer> exampleNums = testNamesList.stream().filter(s -> s.matches(testName + EXAMPLE_FILE_NAME + "\\d+"))
+                .map(s -> StringUtils.substringAfterLast(s, EXAMPLE_FILE_NAME)).map(Integer::parseInt).collect(Collectors.toList());
+        if (!exampleNums.isEmpty()) {
+            String newTestName = testName.concat(EXAMPLE_FILE_NAME).concat(String.valueOf((exampleNums.get(exampleNums.size() - 1) + 1)));
+            ReportContext.setCustomTestDirName(newTestName);
+            testNamesList.add(newTestName);
+        } else if (testNamesList.contains(testName)) {
+            String newTestName = testName.concat(EXAMPLE_FILE_NAME).concat("2");
+            ReportContext.setCustomTestDirName(newTestName);
+            testNamesList.add(newTestName);
+        } else {
+            ReportContext.setCustomTestDirName(testName);
+            testNamesList.add(testName);
+        }
         this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
     }
 
@@ -76,8 +98,18 @@ public abstract class CucumberRunner extends AbstractTest {
             for (int j = 0; j < scenario.length; j++) {
                 result[i][0] = scenario[0];
                 result[i][1] = scenario[1];
-                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])),
-                        prepareTestName((PickleWrapper) scenario[0], (FeatureWrapper) scenario[1]));
+                final String testName = prepareTestName(STR_FORMAT_TEST_NAME, (PickleWrapper) scenario[0], (FeatureWrapper) scenario[1]);
+                List<Integer> exampleNums = testNameArgsMap.values().stream().filter(s -> s.matches(testName + EXAMPLE_TEST_NAME + "\\d+"))
+                        .map(s -> StringUtils.substringAfterLast(s, EXAMPLE_TEST_NAME)).map(Integer::parseInt).collect(Collectors.toList());
+                if (!exampleNums.isEmpty()) {
+                    String newTestName = testName.concat(EXAMPLE_TEST_NAME).concat(String.valueOf((exampleNums.get(exampleNums.size() - 1) + 1)));
+                    testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), newTestName);
+                } else if (testNamesList.contains(testName)) {
+                    String newTestName = testName.concat(EXAMPLE_TEST_NAME).concat("2");
+                    testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), newTestName);
+                } else {
+                    testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), testName);
+                }
             }
         }
         context.setAttribute(SpecialKeywords.TEST_NAME_ARGS_MAP, testNameArgsMap);
@@ -173,12 +205,12 @@ public abstract class CucumberRunner extends AbstractTest {
         return false;
     }
 
-    private String prepareTestName(PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
+    private String prepareTestName(String strFormat, PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
         String featureName = cleanQuotes(featureWrapper.toString());
         if (featureName.startsWith(FEATURE_NAME_OPTIONAL + "[")) {
             featureName = featureName.replace(FEATURE_NAME_OPTIONAL, "");
         }
-        return String.format("%s (%s)", cleanBrackets(featureName), cleanQuotes(pickleWrapper.toString()));
+        return String.format(strFormat, cleanBrackets(featureName), cleanQuotes(pickleWrapper.toString()));
     }
 
     private String cleanQuotes(String originalString) {
