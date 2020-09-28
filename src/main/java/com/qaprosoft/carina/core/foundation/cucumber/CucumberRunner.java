@@ -151,14 +151,14 @@ public abstract class CucumberRunner extends AbstractTest {
             if (list.size() > 0) {
                 // String buildNumber = "1";
                 // String buildProject = "CUCUMBER";
-                boolean skippedFails = true;
-                boolean pendingFails = true;
-                boolean undefinedFails = true;
-                boolean missingFails = true;
+                // boolean skippedFails = true;
+                // boolean pendingFails = true;
+                // boolean undefinedFails = true;
+                // boolean missingFails = true;
 
                 net.masterthought.cucumber.Configuration configuration = new net.masterthought.cucumber.Configuration(reportOutputDirectory,
                         "Cucumber Test Results");
-                configuration.setStatusFlags(skippedFails, pendingFails, undefinedFails, missingFails);
+                // configuration.setStatusFlags(skippedFails, pendingFails, undefinedFails, missingFails);
                 // configuration.setParallelTesting(parallelTesting);
                 // configuration.setJenkinsBasePath(jenkinsBasePath);
                 // configuration.setRunWithJenkins(runWithJenkins);
