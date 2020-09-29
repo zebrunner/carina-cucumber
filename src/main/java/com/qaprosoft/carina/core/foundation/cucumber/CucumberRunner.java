@@ -126,7 +126,7 @@ public abstract class CucumberRunner extends AbstractTest {
 
         try {
             // String RootDir = System.getProperty("user.dir");
-            File file = ReportContext.getArtifactsFolder();
+            File file = ReportContext.getBaseDir();
 
             File reportOutputDirectory = new File(String.format("%s/%s", file, SpecialKeywords.CUCUMBER_REPORT_FOLDER));
 
@@ -183,7 +183,7 @@ public abstract class CucumberRunner extends AbstractTest {
      */
     public static boolean isCucumberReportFolderExists() {
         try {
-            File reportOutputDirectory = new File(String.format("%s/%s", ReportContext.getArtifactsFolder(), SpecialKeywords.CUCUMBER_REPORT_FOLDER));
+            File reportOutputDirectory = new File(String.format("%s/%s", ReportContext.getBaseDir(), SpecialKeywords.CUCUMBER_REPORT_FOLDER));
             if (reportOutputDirectory.exists() && reportOutputDirectory.isDirectory()) {
                 if (reportOutputDirectory.list().length > 0) {
                     LOGGER.debug("Cucumber Report Folder is not empty!");
