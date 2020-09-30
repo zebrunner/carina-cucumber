@@ -38,6 +38,7 @@ import com.qaprosoft.carina.core.foundation.AbstractTest;
 import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
 import com.qaprosoft.carina.core.foundation.report.ReportContext;
 import com.qaprosoft.carina.core.foundation.utils.Configuration;
+import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
 
 import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
@@ -68,6 +69,7 @@ public abstract class CucumberRunner extends AbstractTest {
     public void setUpClass() throws Exception {
         ReportContext.setCustomTestDirName("carina-beforeclass");
         this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
+        TestNameResolverRegistry.set(new CucumberNameResolver());
     }
 
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
