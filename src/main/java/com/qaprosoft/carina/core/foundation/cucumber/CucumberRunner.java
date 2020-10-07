@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
@@ -47,8 +46,6 @@ import net.masterthought.cucumber.ReportBuilder;
 public abstract class CucumberRunner extends AbstractTest {
     private TestNGCucumberRunner testNGCucumberRunner;
 
-    private final static String FEATURE_NAME_OPTIONAL = "Optional";
-
     private final static String STR_FORMAT_TEST_NAME = "%s (%s)";
     private final static String STR_FORMAT_TEST_FOLDER_NAME = "%s_%s";
     private final static String EXAMPLE_FILE_NAME_FORMAT = "_ex%04d";
@@ -67,7 +64,7 @@ public abstract class CucumberRunner extends AbstractTest {
 
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
     public void feature(PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
-        final String testName = prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper);
+        final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper);
         List<String> exampleNums = testNamesList.stream().filter(s -> s.matches(Pattern.quote(testName) + EXAMPLE_FILE_NAME_REGEX))
                 .collect(Collectors.toList());
         if (!exampleNums.isEmpty()) {
@@ -91,7 +88,8 @@ public abstract class CucumberRunner extends AbstractTest {
             result[i] = new Object[2];
             result[i][0] = scenario[0];
             result[i][1] = scenario[1];
-            final String testName = prepareTestName(STR_FORMAT_TEST_NAME, (PickleWrapper) scenario[0], (FeatureWrapper) scenario[1]);
+            final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_NAME, (PickleWrapper) scenario[0],
+                    (FeatureWrapper) scenario[1]);
             List<String> exampleNums = testNameArgsMap.values().stream().filter(s -> s.matches(Pattern.quote(testName) + EXAMPLE_TEST_NAME_REGEX))
                     .collect(Collectors.toList());
             if (!exampleNums.isEmpty()) {
@@ -193,21 +191,4 @@ public abstract class CucumberRunner extends AbstractTest {
         return false;
     }
 
-    private String prepareTestName(String strFormat, PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
-        String featureName = cleanQuotes(featureWrapper.toString());
-        if (featureName.startsWith(FEATURE_NAME_OPTIONAL + "[")) {
-            featureName = featureName.replace(FEATURE_NAME_OPTIONAL, "");
-        }
-        return String.format(strFormat, cleanBrackets(featureName), cleanQuotes(pickleWrapper.toString()));
-    }
-
-    private String cleanQuotes(String originalString) {
-        String res = StringUtils.removeEnd(StringUtils.removeStart(originalString, "\""), "\"");
-        return res;
-    }
-
-    private String cleanBrackets(String originalString) {
-        String res = StringUtils.removeEnd(StringUtils.removeStart(originalString, "["), "]");
-        return res;
-    }
 }

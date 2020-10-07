@@ -3,12 +3,18 @@ package com.qaprosoft.carina.core.foundation.cucumber;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.testng.ITestResult;
 
 import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
 import com.zebrunner.agent.testng.core.testname.TestNameResolver;
 
+import io.cucumber.testng.FeatureWrapper;
+import io.cucumber.testng.PickleWrapper;
+
 public class CucumberNameResolver implements TestNameResolver {
+
+    private final static String FEATURE_NAME_OPTIONAL = "Optional";
 
     @Override
     @SuppressWarnings({ "unlikely-arg-type" })
@@ -63,6 +69,24 @@ public class CucumberNameResolver implements TestNameResolver {
             testName += String.format(lineFormat, index);
         }
         return testName;
+    }
+
+    public static String prepareTestName(String strFormat, PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
+        String featureName = cleanQuotes(featureWrapper.toString());
+        if (featureName.startsWith(FEATURE_NAME_OPTIONAL + "[")) {
+            featureName = featureName.replace(FEATURE_NAME_OPTIONAL, "");
+        }
+        return String.format(strFormat, cleanBrackets(featureName), cleanQuotes(pickleWrapper.toString()));
+    }
+
+    private static String cleanQuotes(String originalString) {
+        String res = StringUtils.removeEnd(StringUtils.removeStart(originalString, "\""), "\"");
+        return res;
+    }
+
+    private static String cleanBrackets(String originalString) {
+        String res = StringUtils.removeEnd(StringUtils.removeStart(originalString, "["), "]");
+        return res;
     }
 
 }
