@@ -32,10 +32,9 @@ public class CucumberNameResolver implements TestNameResolver {
             name = result.getTestContext().getCurrentXmlTest().getName();
         }
 
-        // TODO: find the bext way to calculate TUID/hash
         if (result.getTestContext().getCurrentXmlTest().getAllParameters().containsKey(SpecialKeywords.EXCEL_DS_CUSTOM_PROVIDER) ||
                 result.getTestContext().getCurrentXmlTest().getAllParameters().containsKey(SpecialKeywords.DS_CUSTOM_PROVIDER)) {
-            // AUTO-274 "Pass"ing status set on emailable report when a test step fails
+            // AUTO-274 "Passing status set on emailable report when a test step fails"
             String methodUID = "";
             for (int i = 0; i < result.getParameters().length; i++) {
                 if (result.getParameters()[i] != null) {

@@ -30,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -62,12 +61,6 @@ public abstract class CucumberRunner extends AbstractTest {
     List<String> testNamesList = Collections.synchronizedList(new ArrayList<String>());
 
     public CucumberRunner() {
-        this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
-    }
-
-    @BeforeClass(alwaysRun = true)
-    public void setUpClass() throws Exception {
-        ReportContext.setCustomTestDirName("carina-beforeclass");
         this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
         TestNameResolverRegistry.set(new CucumberNameResolver());
     }
@@ -124,7 +117,6 @@ public abstract class CucumberRunner extends AbstractTest {
      */
     private void generateCucumberReport() {
         String buildNumber = Configuration.get(Configuration.Parameter.APP_VERSION);
-        // TODO: adjust test/suiteName
 
         try {
             // String RootDir = System.getProperty("user.dir");
