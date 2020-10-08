@@ -15,58 +15,91 @@
  *******************************************************************************/
 package com.qaprosoft.carina.core.foundation.cucumber;
 
-import com.qaprosoft.carina.core.foundation.AbstractTest;
-import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
-import com.qaprosoft.carina.core.foundation.report.ReportContext;
-import com.qaprosoft.carina.core.foundation.utils.Configuration;
-
-import net.masterthought.cucumber.ReportBuilder;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
+import com.qaprosoft.carina.core.foundation.AbstractTest;
+import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
+import com.qaprosoft.carina.core.foundation.report.ReportContext;
+import com.qaprosoft.carina.core.foundation.utils.Configuration;
+import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
 
+import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
 import io.cucumber.testng.TestNGCucumberRunner;
+import net.masterthought.cucumber.ReportBuilder;
 
 public abstract class CucumberRunner extends AbstractTest {
     private TestNGCucumberRunner testNGCucumberRunner;
 
+    private final static String STR_FORMAT_TEST_NAME = "%s (%s)";
+    private final static String STR_FORMAT_TEST_FOLDER_NAME = "%s_%s";
+    private final static String EXAMPLE_FILE_NAME_FORMAT = "_ex%04d";
+    private final static String EXAMPLE_FILE_NAME_REGEX = "(_ex\\d+){0,1}";
+    private final static String EXAMPLE_TEST_NAME_FORMAT = " [EX%04d]";
+    private final static String EXAMPLE_TEST_NAME_REGEX = "( \\[EX\\d+\\]){0,1}";
+
     protected static final Logger LOGGER = Logger.getLogger(CucumberRunner.class);
+
+    List<String> testNamesList = Collections.synchronizedList(new ArrayList<String>());
 
     public CucumberRunner() {
         this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
-    }
-
-    @BeforeClass(alwaysRun = true)
-    public void setUpClass() throws Exception {
-        this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
+        TestNameResolverRegistry.set(new CucumberNameResolver());
     }
 
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
-    public void feature(PickleWrapper pickleWrapper) {
+    public void feature(PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
+        final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper);
+        List<String> exampleNums = testNamesList.stream().filter(s -> s.matches(Pattern.quote(testName) + EXAMPLE_FILE_NAME_REGEX))
+                .collect(Collectors.toList());
+        if (!exampleNums.isEmpty()) {
+            String newTestName = testName.concat(String.format(EXAMPLE_FILE_NAME_FORMAT, exampleNums.size() + 1));
+            ReportContext.setCustomTestDirName(newTestName);
+            testNamesList.add(newTestName);
+        } else {
+            ReportContext.setCustomTestDirName(testName);
+            testNamesList.add(testName);
+        }
         this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
     }
 
-    @DataProvider
-    public Object[][] features() {
+    @DataProvider(parallel = true)
+    public Object[][] features(ITestContext context) {
         Object[][] scenarios = this.testNGCucumberRunner.provideScenarios();
         Object[][] result = new Object[scenarios.length][1];
+        Map<String, String> testNameArgsMap = Collections.synchronizedMap(new HashMap<>());
         for (int i = 0; i < scenarios.length; i++) {
             Object[] scenario = scenarios[i];
-            result[i] = new Object[1];
-            for (int j = 0; j < scenario.length; j++) {
-                result[i][0] = scenario[0];
+            result[i] = new Object[2];
+            result[i][0] = scenario[0];
+            result[i][1] = scenario[1];
+            final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_NAME, (PickleWrapper) scenario[0],
+                    (FeatureWrapper) scenario[1]);
+            List<String> exampleNums = testNameArgsMap.values().stream().filter(s -> s.matches(Pattern.quote(testName) + EXAMPLE_TEST_NAME_REGEX))
+                    .collect(Collectors.toList());
+            if (!exampleNums.isEmpty()) {
+                String newTestName = testName.concat(String.format(EXAMPLE_TEST_NAME_FORMAT, exampleNums.size() + 1));
+                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), newTestName);
+            } else {
+                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), testName);
             }
         }
+        context.setAttribute(SpecialKeywords.TEST_NAME_ARGS_MAP, testNameArgsMap);
         return result;
     }
 
@@ -82,11 +115,10 @@ public abstract class CucumberRunner extends AbstractTest {
      */
     private void generateCucumberReport() {
         String buildNumber = Configuration.get(Configuration.Parameter.APP_VERSION);
-        //TODO: adjust test/suiteName
 
         try {
             // String RootDir = System.getProperty("user.dir");
-            File file = ReportContext.getArtifactsFolder();
+            File file = ReportContext.getBaseDir();
 
             File reportOutputDirectory = new File(String.format("%s/%s", file, SpecialKeywords.CUCUMBER_REPORT_FOLDER));
 
@@ -111,14 +143,14 @@ public abstract class CucumberRunner extends AbstractTest {
             if (list.size() > 0) {
                 // String buildNumber = "1";
                 // String buildProject = "CUCUMBER";
-                boolean skippedFails = true;
-                boolean pendingFails = true;
-                boolean undefinedFails = true;
-                boolean missingFails = true;
+                // boolean skippedFails = true;
+                // boolean pendingFails = true;
+                // boolean undefinedFails = true;
+                // boolean missingFails = true;
 
                 net.masterthought.cucumber.Configuration configuration = new net.masterthought.cucumber.Configuration(reportOutputDirectory,
                         "Cucumber Test Results");
-                configuration.setStatusFlags(skippedFails, pendingFails, undefinedFails, missingFails);
+                // configuration.setStatusFlags(skippedFails, pendingFails, undefinedFails, missingFails);
                 // configuration.setParallelTesting(parallelTesting);
                 // configuration.setJenkinsBasePath(jenkinsBasePath);
                 // configuration.setRunWithJenkins(runWithJenkins);
@@ -143,7 +175,7 @@ public abstract class CucumberRunner extends AbstractTest {
      */
     public static boolean isCucumberReportFolderExists() {
         try {
-            File reportOutputDirectory = new File(String.format("%s/%s", ReportContext.getArtifactsFolder(), SpecialKeywords.CUCUMBER_REPORT_FOLDER));
+            File reportOutputDirectory = new File(String.format("%s/%s", ReportContext.getBaseDir(), SpecialKeywords.CUCUMBER_REPORT_FOLDER));
             if (reportOutputDirectory.exists() && reportOutputDirectory.isDirectory()) {
                 if (reportOutputDirectory.list().length > 0) {
                     LOGGER.debug("Cucumber Report Folder is not empty!");
@@ -158,4 +190,5 @@ public abstract class CucumberRunner extends AbstractTest {
         }
         return false;
     }
+
 }
