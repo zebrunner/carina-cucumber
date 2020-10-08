@@ -1,4 +1,4 @@
-![Alt text](https://github.com/qaprosoft/carina/docs/img/carina.png "Carina Logo")
+![Alt text](https://github.com/qaprosoft/carina/raw/master/docs/img/carina.png "Carina Logo")
 
 Carina-cucumber is independent [Carina](https://github.com/qaprosoft/carina) module that supports [Behaviour-Driven Development(BDD)](https://cucumber.io/docs/bdd)
 
