@@ -106,8 +106,8 @@ public abstract class CucumberRunner extends AbstractTest {
     @AfterClass
     public void tearDownClass(ITestContext context) throws Exception {
         LOGGER.info("In  @AfterClass tearDownClass");
-        this.testNGCucumberRunner.finish();
         generateCucumberReport();
+        this.testNGCucumberRunner.finish();
     }
 
     /**
