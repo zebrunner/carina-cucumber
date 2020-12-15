@@ -63,8 +63,8 @@ public abstract class CucumberRunner extends AbstractTest {
     }
 
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
-    public void feature(PickleWrapper pickleWrapper, FeatureWrapper featureWrapper) {
-        final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper);
+    public void feature(PickleWrapper pickleWrapper, FeatureWrapperCustomName featureWrapper) {
+        final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper.getFeatureWrapper());
         List<String> exampleNums = testNamesList.stream().filter(s -> s.matches(Pattern.quote(testName) + EXAMPLE_FILE_NAME_REGEX))
                 .collect(Collectors.toList());
         if (!exampleNums.isEmpty()) {
@@ -87,7 +87,7 @@ public abstract class CucumberRunner extends AbstractTest {
             Object[] scenario = scenarios[i];
             result[i] = new Object[2];
             result[i][0] = scenario[0];
-            result[i][1] = scenario[1];
+            result[i][1] = new FeatureWrapperCustomName((FeatureWrapper) scenario[1]);
             final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_NAME, (PickleWrapper) scenario[0],
                     (FeatureWrapper) scenario[1]);
             List<String> exampleNums = testNameArgsMap.values().stream().filter(s -> s.matches(Pattern.quote(testName) + EXAMPLE_TEST_NAME_REGEX))
@@ -106,8 +106,8 @@ public abstract class CucumberRunner extends AbstractTest {
     @AfterClass
     public void tearDownClass(ITestContext context) throws Exception {
         LOGGER.info("In  @AfterClass tearDownClass");
-        generateCucumberReport();
         this.testNGCucumberRunner.finish();
+        generateCucumberReport();
     }
 
     /**
