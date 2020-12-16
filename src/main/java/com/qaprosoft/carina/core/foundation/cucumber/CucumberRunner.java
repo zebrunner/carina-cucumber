@@ -62,6 +62,14 @@ public abstract class CucumberRunner extends AbstractTest {
         TestNameResolverRegistry.set(new CucumberNameResolver());
     }
 
+    public TestNGCucumberRunner getTestNGCucumberRunner() {
+        return testNGCucumberRunner;
+    }
+
+    public void setTestNGCucumberRunner(TestNGCucumberRunner testNGCucumberRunner) {
+        this.testNGCucumberRunner = testNGCucumberRunner;
+    }
+
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
     public void feature(PickleWrapper pickleWrapper, FeatureWrapperCustomName featureWrapper) {
         final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper.getFeatureWrapper());
