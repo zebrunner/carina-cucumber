@@ -36,6 +36,7 @@ import com.qaprosoft.carina.core.foundation.AbstractTest;
 import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
 import com.qaprosoft.carina.core.foundation.report.ReportContext;
 import com.qaprosoft.carina.core.foundation.utils.Configuration;
+import com.zebrunner.agent.core.registrar.Artifact;
 import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
 
 import io.cucumber.testng.FeatureWrapper;
@@ -52,6 +53,8 @@ public abstract class CucumberRunner extends AbstractTest {
     private final static String EXAMPLE_FILE_NAME_REGEX = "(_ex\\d+){0,1}";
     private final static String EXAMPLE_TEST_NAME_FORMAT = " [EX%04d]";
     private final static String EXAMPLE_TEST_NAME_REGEX = "( \\[EX\\d+\\]){0,1}";
+
+    private final static String CUCUMBER_REPORT_NAME = "Cucumber report";
 
     protected static final Logger LOGGER = Logger.getLogger(CucumberRunner.class);
 
@@ -166,6 +169,8 @@ public abstract class CucumberRunner extends AbstractTest {
 
                 ReportBuilder reportBuilder = new ReportBuilder(list, configuration);
                 reportBuilder.generateReports();
+
+                Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ReportContext.getCucumberReportLink());
             } else {
                 LOGGER.info("There are no json files for cucumber report.");
                 return;
