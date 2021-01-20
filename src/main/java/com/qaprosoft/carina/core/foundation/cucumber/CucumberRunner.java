@@ -36,6 +36,7 @@ import com.qaprosoft.carina.core.foundation.AbstractTest;
 import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
 import com.qaprosoft.carina.core.foundation.report.ReportContext;
 import com.qaprosoft.carina.core.foundation.utils.Configuration;
+import com.qaprosoft.carina.core.foundation.utils.Configuration.Parameter;
 import com.zebrunner.agent.core.registrar.Artifact;
 import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
 
@@ -55,6 +56,8 @@ public abstract class CucumberRunner extends AbstractTest {
     private final static String EXAMPLE_TEST_NAME_REGEX = "( \\[EX\\d+\\]){0,1}";
 
     private final static String CUCUMBER_REPORT_NAME = "Cucumber report";
+    private final static String ZAFIRA_REPORT_CI = "ZafiraReport";
+    private final static String CUCUMBER_REPORT_CI = "CucumberReport";
 
     protected static final Logger LOGGER = Logger.getLogger(CucumberRunner.class);
 
@@ -170,7 +173,14 @@ public abstract class CucumberRunner extends AbstractTest {
                 ReportBuilder reportBuilder = new ReportBuilder(list, configuration);
                 reportBuilder.generateReports();
 
-                Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ReportContext.getCucumberReportLink());
+                if (!Configuration.isNull(Parameter.REPORT_URL)) {
+                    String reportUrl = Configuration.get(Parameter.REPORT_URL);
+                    if (reportUrl.endsWith(ZAFIRA_REPORT_CI)) {
+                        Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, reportUrl.replace(ZAFIRA_REPORT_CI, CUCUMBER_REPORT_CI));
+                    } else {
+                        Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ReportContext.getCucumberReportLink());
+                    }
+                }
             } else {
                 LOGGER.info("There are no json files for cucumber report.");
                 return;
