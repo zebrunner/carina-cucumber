@@ -53,8 +53,8 @@ public abstract class CucumberRunner extends AbstractTest {
     private final static String STR_FORMAT_TEST_FOLDER_NAME = "%s_%s";
     private final static String EXAMPLE_FILE_NAME_FORMAT = "_ex%04d";
     private final static String EXAMPLE_FILE_NAME_REGEX = "(_ex\\d+){0,1}";
-    private final static String EXAMPLE_TEST_NAME_FORMAT = " [EX%04d]";
-    private final static String EXAMPLE_TEST_NAME_REGEX = "( \\[EX\\d+\\]){0,1}";
+    private final static String EXAMPLE_TEST_NAME_FORMAT = " EX%04d";
+    private final static String EXAMPLE_TEST_NAME_REGEX = "( EX\\d+){0,1}";
 
     private final static String CUCUMBER_REPORT_NAME = "Cucumber report";
     private final static String ZAFIRA_REPORT_CI = "ZafiraReport";
