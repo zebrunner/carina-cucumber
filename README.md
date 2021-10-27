@@ -8,7 +8,7 @@ Carina-cucumber is independent [Carina](https://github.com/zebrunner/carina) mod
 * [Telegram channel](https://t.me/qps_carina)
 
 ## Code formatter
-We propose to use our configured [**Java code formatter for Eclipse**](https://github.com/zebrunner/carina/blob/master/carina_formatter.xml). To use same formatter in IntelliJ IDEA you should install and configure [**Eclipse Code Formatter**](https://plugins.jetbrains.com/plugin/6546-eclipse-code-formatter).
+We offer to use our configured [**Java code formatter for Eclipse**](https://github.com/zebrunner/carina/blob/master/carina_formatter.xml). To use the same formatter in IntelliJ IDEA, you should install and configure [**Eclipse Code Formatter**](https://plugins.jetbrains.com/plugin/6546-eclipse-code-formatter).
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
