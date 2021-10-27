@@ -3,8 +3,7 @@
 Carina-cucumber is independent [Carina](https://github.com/zebrunner/carina) module that supports [Behaviour-Driven Development(BDD)](https://cucumber.io/docs/bdd)
 
 ## Documentation and free support
-* [Cucumber usage example](https://github.com/zebrunner/carina-demo/tree/master/src/test/resources/features)
-* [User Guide](https://zebrunner.github.io/carina)
+* [User Guide](https://zebrunner.github.io/carina/cucumber/)
 * [Demo project](https://github.com/zebrunner/carina-demo)
 * [Telegram channel](https://t.me/qps_carina)
 
@@ -15,6 +14,3 @@ We propose to use our configured [**Java code formatter for Eclipse**](https://g
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 Documentation and Site - [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/deed.en_US)
-
-
-
