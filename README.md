@@ -1,6 +1,6 @@
 ![Alt text](https://github.com/zebrunner/carina/raw/master/docs/img/carina.png "Carina Logo")
 
-Carina-cucumber is independent [Carina](https://github.com/zebrunner/carina) module that supports [Behaviour-Driven Development(BDD)](https://cucumber.io/docs/bdd)
+Carina-cucumber is independent [Carina](https://github.com/zebrunner/carina) module that supports [Behaviour-Driven Development (BDD)](https://cucumber.io/docs/bdd)
 
 ## Documentation and free support
 * [User Guide](https://zebrunner.github.io/carina/cucumber/)
