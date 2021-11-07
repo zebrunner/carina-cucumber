@@ -30,7 +30,7 @@ import io.cucumber.java.Scenario;
 
 
 public class CucumberBaseTest extends CucumberRunner {
-    int i
+
     /**
      * Check is it Cucumber Test or not.
      *
