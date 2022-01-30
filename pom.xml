@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>com.qaprosoft</groupId>
 		<artifactId>carina</artifactId>
-		<version>7.2.14</version>
+		<version>7.3.15</version>
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,17 +23,18 @@
 		<cucumber.reporting>5.3.1</cucumber.reporting>
 	</properties>
 	<repositories>
-		<repository>
-			<id>qaprosoft_snapshots</id>
-			<name>Qaprosoft Snapshots</name>
-			<url>https://ci.qaprosoft.com/nexus/content/repositories/snapshots/</url>
+		<!-- Uncomment only for testing any SNAPSHOT version of carina or zebrunner agent! -->
+		<!--repository>
+			<id>zebrunner_snapshots</id>
+			<name>zebrunner Snapshots</name>
+			<url>https://nexus.zebrunner.dev/repository/ce-snapshots/</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>
+		</repository-->
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -102,9 +103,9 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 		<snapshotRepository>
-			<id>deploymentRepo</id>
-			<name>Qaprosoft Snapshots</name>
-			<url>https://ci.qaprosoft.com/nexus/content/repositories/snapshots/</url>
+			<id>ZBR_Nexus</id>
+			<name>Zebrunner Snapshots</name>
+			<url>https://nexus.zebrunner.dev/repository/ce-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
