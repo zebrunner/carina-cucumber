@@ -107,11 +107,11 @@ public abstract class CucumberRunner extends AbstractTest {
                     .collect(Collectors.toList());
             if (!exampleNums.isEmpty()) {
                 String newTestName = testName.concat(String.format(EXAMPLE_TEST_NAME_FORMAT, exampleNums.size() + 1));
-                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), newTestName);
                 result[i][2] = newTestName;
+                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), newTestName);
             } else {
-                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), testName);
                 result[i][2] = testName;
+                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), testName);
             }
         }
         context.setAttribute(SpecialKeywords.TEST_NAME_ARGS_MAP, testNameArgsMap);
