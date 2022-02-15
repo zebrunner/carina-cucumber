@@ -17,6 +17,7 @@ package com.qaprosoft.carina.core.foundation.cucumber;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +28,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.DataProvider;
@@ -47,6 +49,8 @@ import io.cucumber.testng.TestNGCucumberRunner;
 import net.masterthought.cucumber.ReportBuilder;
 
 public abstract class CucumberRunner extends AbstractTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    
     private TestNGCucumberRunner testNGCucumberRunner;
 
     private final static String STR_FORMAT_TEST_NAME = "%s (%s)";
@@ -59,8 +63,6 @@ public abstract class CucumberRunner extends AbstractTest {
     private final static String CUCUMBER_REPORT_NAME = "Cucumber report";
     private final static String ZAFIRA_REPORT_CI = "ZafiraReport";
     private final static String CUCUMBER_REPORT_CI = "CucumberReport";
-
-    protected static final Logger LOGGER = Logger.getLogger(CucumberRunner.class);
 
     List<String> testNamesList = Collections.synchronizedList(new ArrayList<String>());
 

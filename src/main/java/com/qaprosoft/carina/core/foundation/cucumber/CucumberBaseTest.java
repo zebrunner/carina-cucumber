@@ -15,11 +15,14 @@
  *******************************************************************************/
 package com.qaprosoft.carina.core.foundation.cucumber;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.qaprosoft.carina.core.foundation.webdriver.CarinaDriver;
 import com.qaprosoft.carina.core.foundation.webdriver.Screenshot;
@@ -30,6 +33,7 @@ import io.cucumber.java.Scenario;
 
 
 public class CucumberBaseTest extends CucumberRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     /**
      * Check is it Cucumber Test or not.
