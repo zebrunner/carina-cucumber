@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>com.qaprosoft</groupId>
 		<artifactId>carina</artifactId>
-		<version>7.3.20.1681-SNAPSHOT</version>
+		<version>7.4.21</version>
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,8 +23,8 @@
 		<cucumber.reporting>5.7.1</cucumber.reporting>
 	</properties>
 	<repositories>
-		<!-- Uncomment only for testing any SNAPSHOT version of carina or zebrunner agent! -->
-		<repository>
+		<!-- Uncomment only for testing any SNAPSHOT version of carina! -->
+		<!--repository>
 			<id>zebrunner_snapshots</id>
 			<name>zebrunner Snapshots</name>
 			<url>https://nexus.zebrunner.dev/repository/ce-snapshots/</url>
@@ -34,7 +34,7 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>
+		</repository-->
 	</repositories>
 	<dependencies>
 		<dependency>
