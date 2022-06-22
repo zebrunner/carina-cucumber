@@ -90,7 +90,11 @@ public abstract class CucumberRunner extends AbstractTest {
 
         ReportContext.setCustomTestDirName(testName);
         testNamesList.add(testName);
-        this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
+        try {
+            this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
+        } catch (Exception e) {
+            LOGGER.error("Undefined error detected!", e);
+        }
     }
 
     @DataProvider(parallel = true)
