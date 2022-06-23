@@ -88,13 +88,11 @@ public abstract class CucumberRunner extends AbstractTest {
             testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper.getFeatureWrapper());
         }
 
-        ReportContext.setCustomTestDirName(testName);
+        // commented renaming report folder
+        // ReportContext.setCustomTestDirName(testName);
         testNamesList.add(testName);
-        try {
-            this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
-        } catch (Exception e) {
-            LOGGER.error("Undefined error detected!", e);
-        }
+        this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
+        // think about catching IllegalStateException
     }
 
     @DataProvider(parallel = true)
