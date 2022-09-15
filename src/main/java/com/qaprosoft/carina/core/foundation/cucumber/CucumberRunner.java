@@ -87,9 +87,7 @@ public abstract class CucumberRunner extends AbstractTest {
         } else {
             testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper.getFeatureWrapper());
         }
-
-        // commented renaming report folder
-        // ReportContext.setCustomTestDirName(testName);
+         ReportContext.setCustomTestDirName(testName);
         testNamesList.add(testName);
         this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
         // think about catching IllegalStateException
