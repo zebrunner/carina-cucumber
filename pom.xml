@@ -18,8 +18,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>11</java.version>
 
-		<cucumber.testng.version>7.3.4</cucumber.testng.version>
-		<cucumber.java.version>7.3.4</cucumber.java.version>
+		<cucumber.testng.version>7.5.0</cucumber.testng.version>
+		<cucumber.java.version>7.5.0</cucumber.java.version>
 		<cucumber.reporting>5.7.1</cucumber.reporting>
 	</properties>
 	<repositories>
