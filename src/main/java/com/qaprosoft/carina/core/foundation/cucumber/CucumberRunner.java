@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import com.qaprosoft.carina.core.foundation.utils.R;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,9 +88,9 @@ public abstract class CucumberRunner extends AbstractTest {
         } else {
             testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper.getFeatureWrapper());
         }
-
-        // commented renaming report folder
-        // ReportContext.setCustomTestDirName(testName);
+        if(R.CONFIG.getBoolean("custom_testdir_naming")) {
+            ReportContext.setCustomTestDirName(testName);
+        }
         testNamesList.add(testName);
         this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
         // think about catching IllegalStateException
