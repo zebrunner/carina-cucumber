@@ -17,6 +17,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>11</java.version>
+		<guava.version>31.1-jre</guava.version>
 		<cucumber.testng.version>7.9.0</cucumber.testng.version>
 		<cucumber.java.version>7.9.0</cucumber.java.version>
 		<cucumber.reporting>5.7.5</cucumber.reporting>
@@ -36,6 +37,13 @@
 		</repository-->
 	</repositories>
 	<dependencies>
+		<!-- We should set correct version of guava for Selenium. Copied from the carina-webdriver -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+
 		<!-- Cucumber -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
