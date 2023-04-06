@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.qaprosoft.carina.core.foundation.utils.R;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +36,12 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.qaprosoft.carina.core.foundation.AbstractTest;
-import com.qaprosoft.carina.core.foundation.commons.SpecialKeywords;
-import com.qaprosoft.carina.core.foundation.report.ReportContext;
-import com.qaprosoft.carina.core.foundation.utils.Configuration;
-import com.qaprosoft.carina.core.foundation.utils.Configuration.Parameter;
 import com.zebrunner.agent.core.registrar.Artifact;
 import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
+import com.zebrunner.carina.utils.Configuration;
+import com.zebrunner.carina.utils.R;
+import com.zebrunner.carina.utils.commons.SpecialKeywords;
+import com.zebrunner.carina.utils.report.ReportContext;
 
 import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
@@ -134,7 +133,7 @@ public abstract class CucumberRunner extends AbstractTest {
      * Generate Cucumber Report
      */
     private void generateCucumberReport() {
-        String buildNumber = Configuration.get(Parameter.APP_VERSION);
+        String buildNumber = Configuration.get(Configuration.Parameter.APP_VERSION);
 
         try {
             // String RootDir = System.getProperty("user.dir");
@@ -179,8 +178,8 @@ public abstract class CucumberRunner extends AbstractTest {
                 ReportBuilder reportBuilder = new ReportBuilder(list, configuration);
                 reportBuilder.generateReports();
 
-                if (!Configuration.isNull(Parameter.REPORT_URL)) {
-                    String reportUrl = Configuration.get(Parameter.REPORT_URL);
+                if (!Configuration.isNull(Configuration.Parameter.REPORT_URL)) {
+                    String reportUrl = Configuration.get(Configuration.Parameter.REPORT_URL);
                     if (reportUrl.endsWith(ZAFIRA_REPORT_CI)) {
                         Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, reportUrl.replace(ZAFIRA_REPORT_CI, CUCUMBER_REPORT_CI));
                     } else {
