@@ -50,7 +50,7 @@ import net.masterthought.cucumber.ReportBuilder;
 
 public abstract class CucumberRunner extends AbstractTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    
+
     private TestNGCucumberRunner testNGCucumberRunner;
 
     private final static String STR_FORMAT_TEST_NAME = "%s (%s)";

@@ -43,7 +43,6 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
-
 		<!-- Cucumber -->
 		<dependency>
 			<groupId>io.cucumber</groupId>

@@ -19,8 +19,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.decorators.Decorated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,18 +60,11 @@ public class CucumberBaseTest extends CucumberRunner {
             for (Map.Entry<String, CarinaDriver> entry : drivers.entrySet()) {
                 String driverName = entry.getKey();
                 // in case of failure
-                Screenshot.capture(removeListeners(entry.getValue().getDriver()),
+                Screenshot.capture(entry.getValue().getDriver(),
                         ScreenshotType.UNSUCCESSFUL_DRIVER_ACTION,
                         driverName + ": " + scenario.getName())
                         .ifPresent(fileName -> LOGGER.debug("cucumber screenshot generated: {}", fileName));
             }
         }
-    }
-
-    /**
-     * Clean driver from Decorator
-     */
-    private static WebDriver removeListeners(WebDriver driver) {
-        return driver instanceof Decorated ? ((Decorated<WebDriver>) driver).getOriginal() : driver;
     }
 }
