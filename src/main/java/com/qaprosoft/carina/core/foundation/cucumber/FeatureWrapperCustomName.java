@@ -6,9 +6,8 @@ import io.cucumber.testng.FeatureWrapper;
 
 public class FeatureWrapperCustomName {
 
+    private static final String OPTIONAL_KEY = "Optional";
     private final FeatureWrapper featureWrapper;
-
-    private final static String OPTIONAL_KEY = "Optional";
 
     FeatureWrapperCustomName(FeatureWrapper featureWrapper) {
         this.featureWrapper = featureWrapper;

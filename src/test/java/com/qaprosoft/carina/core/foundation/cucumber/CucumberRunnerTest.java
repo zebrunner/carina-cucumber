@@ -18,8 +18,9 @@ package com.qaprosoft.carina.core.foundation.cucumber;
 import org.testng.annotations.Test;
 
 public class CucumberRunnerTest {
-    @Test()
-    public void hellowCucumber() {
+
+    @Test
+    public void helloCucumber() {
         System.out.println("Hello Carina Cucumber!");
     }
 

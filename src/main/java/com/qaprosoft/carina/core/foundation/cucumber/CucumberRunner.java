@@ -16,7 +16,6 @@
 package com.qaprosoft.carina.core.foundation.cucumber;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,24 +48,21 @@ import io.cucumber.testng.TestNGCucumberRunner;
 import net.masterthought.cucumber.ReportBuilder;
 
 public abstract class CucumberRunner extends AbstractTest {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
+    private static final String STR_FORMAT_TEST_NAME = "%s (%s)";
+    private static final String STR_FORMAT_TEST_FOLDER_NAME = "%s_%s";
+    private static final String EXAMPLE_FILE_NAME_FORMAT = "_ex%04d";
+    private static final String EXAMPLE_FILE_NAME_REGEX = "(_ex\\d+){0,1}";
+    private static final String EXAMPLE_TEST_NAME_FORMAT = " EX%04d";
+    private static final String EXAMPLE_TEST_NAME_REGEX = "( EX\\d+){0,1}";
+    private static final String CUCUMBER_REPORT_NAME = "Cucumber report";
+    private static final String ZAFIRA_REPORT_CI = "ZafiraReport";
+    private static final String CUCUMBER_REPORT_CI = "CucumberReport";
     private TestNGCucumberRunner testNGCucumberRunner;
-
-    private final static String STR_FORMAT_TEST_NAME = "%s (%s)";
-    private final static String STR_FORMAT_TEST_FOLDER_NAME = "%s_%s";
-    private final static String EXAMPLE_FILE_NAME_FORMAT = "_ex%04d";
-    private final static String EXAMPLE_FILE_NAME_REGEX = "(_ex\\d+){0,1}";
-    private final static String EXAMPLE_TEST_NAME_FORMAT = " EX%04d";
-    private final static String EXAMPLE_TEST_NAME_REGEX = "( EX\\d+){0,1}";
-
-    private final static String CUCUMBER_REPORT_NAME = "Cucumber report";
-    private final static String ZAFIRA_REPORT_CI = "ZafiraReport";
-    private final static String CUCUMBER_REPORT_CI = "CucumberReport";
-
     List<String> testNamesList = Collections.synchronizedList(new ArrayList<String>());
 
-    public CucumberRunner() {
+    protected CucumberRunner() {
         this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
         TestNameResolverRegistry.set(new CucumberNameResolver());
     }
@@ -134,32 +130,21 @@ public abstract class CucumberRunner extends AbstractTest {
      */
     private void generateCucumberReport() {
         String buildNumber = Configuration.get(Configuration.Parameter.APP_VERSION);
-
         try {
             // String RootDir = System.getProperty("user.dir");
             File file = ReportContext.getBaseDir();
-
             File reportOutputDirectory = new File(String.format("%s/%s", file, SpecialKeywords.CUCUMBER_REPORT_FOLDER));
-
             File dir = new File("target/");
-
-            File[] finder = dir.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String filename) {
-                    return filename.endsWith(".json");
-                }
-            });
-
-            List<String> list = new ArrayList<String>();
-
+            File[] finder = dir.listFiles((dir1, filename) -> filename.endsWith(".json"));
+            List<String> list = new ArrayList<>();
             for (File fl : finder) {
-                LOGGER.info("Report json: " + fl.getName());
+                LOGGER.info("Report json: {}", fl.getName());
                 list.add("target/" + fl.getName());
             }
-
             // buildNumber should be parsable Integer
             buildNumber = buildNumber.replace(".", "").replace(",", "");
 
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 // String buildNumber = "1";
                 // String buildProject = "CUCUMBER";
                 // boolean skippedFails = true;
@@ -188,7 +173,6 @@ public abstract class CucumberRunner extends AbstractTest {
                 }
             } else {
                 LOGGER.info("There are no json files for cucumber report.");
-                return;
             }
 
         } catch (Exception e) {
@@ -214,7 +198,7 @@ public abstract class CucumberRunner extends AbstractTest {
                 }
             }
         } catch (Exception e) {
-            LOGGER.debug("Error happen during checking that CucumberReport Folder exists or not. Error: " + e.getMessage());
+            LOGGER.debug("Error happen during checking that CucumberReport Folder exists or not. Error: {}", e.getMessage());
         }
         return false;
     }

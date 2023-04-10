@@ -3,18 +3,18 @@ package com.qaprosoft.carina.core.foundation.cucumber;
 import java.util.Arrays;
 import java.util.Map;
 
-import com.zebrunner.carina.utils.commons.SpecialKeywords;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.ITestResult;
 
 import com.zebrunner.agent.testng.core.testname.TestNameResolver;
+import com.zebrunner.carina.utils.commons.SpecialKeywords;
 
 import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
 
 public class CucumberNameResolver implements TestNameResolver {
 
-    private final static String FEATURE_NAME_OPTIONAL = "Optional";
+    private static final String FEATURE_NAME_OPTIONAL = "Optional";
 
     @Override
     @SuppressWarnings({ "unlikely-arg-type" })
@@ -50,13 +50,10 @@ public class CucumberNameResolver implements TestNameResolver {
     }
 
     private static String cleanQuotes(String originalString) {
-        String res = StringUtils.removeEnd(StringUtils.removeStart(originalString, "\""), "\"");
-        return res;
+        return StringUtils.removeEnd(StringUtils.removeStart(originalString, "\""), "\"");
     }
 
     private static String cleanBrackets(String originalString) {
-        String res = StringUtils.removeEnd(StringUtils.removeStart(originalString, "["), "]");
-        return res;
+        return StringUtils.removeEnd(StringUtils.removeStart(originalString, "["), "]");
     }
-
 }
