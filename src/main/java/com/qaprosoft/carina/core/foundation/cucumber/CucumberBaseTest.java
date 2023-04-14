@@ -19,20 +19,19 @@ import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qaprosoft.carina.core.foundation.webdriver.CarinaDriver;
-import com.qaprosoft.carina.core.foundation.webdriver.Screenshot;
+import com.zebrunner.carina.webdriver.CarinaDriver;
+import com.zebrunner.carina.webdriver.Screenshot;
+import com.zebrunner.carina.webdriver.ScreenshotType;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 
-
 public class CucumberBaseTest extends CucumberRunner {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     /**
@@ -56,20 +55,15 @@ public class CucumberBaseTest extends CucumberRunner {
         LOGGER.info("In  @After takeScreenshotOfFailure");
         if (scenario.isFailed()) {
             LOGGER.error("Cucumber Scenario FAILED! Creating screenshot.");
-            String screenId = "";
-
             ConcurrentHashMap<String, CarinaDriver> drivers = getDrivers();
 
             for (Map.Entry<String, CarinaDriver> entry : drivers.entrySet()) {
                 String driverName = entry.getKey();
-                WebDriver drv = entry.getValue().getDriver();
-
-                if (drv instanceof EventFiringWebDriver) {
-                    drv = ((EventFiringWebDriver) drv).getWrappedDriver();
-                }
-
-                screenId = Screenshot.capture(drv, driverName + ": " + scenario.getName()); // in case of failure
-                LOGGER.debug("cucumber screenshot generated: " + screenId);
+                // in case of failure
+                Screenshot.capture(entry.getValue().getDriver(),
+                        ScreenshotType.UNSUCCESSFUL_DRIVER_ACTION,
+                        driverName + ": " + scenario.getName())
+                        .ifPresent(fileName -> LOGGER.debug("cucumber screenshot generated: {}", fileName));
             }
         }
     }
