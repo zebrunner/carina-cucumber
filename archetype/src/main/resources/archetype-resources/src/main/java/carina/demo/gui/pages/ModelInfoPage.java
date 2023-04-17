@@ -6,10 +6,11 @@ package ${package}.carina.demo.gui.pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 
-import com.qaprosoft.carina.core.foundation.webdriver.decorator.ExtendedWebElement;
-import com.qaprosoft.carina.core.gui.AbstractPage;
+import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
+import com.zebrunner.carina.webdriver.gui.AbstractPage;
 
 public class ModelInfoPage extends AbstractPage {
+
     @FindBy(css = ".help-display strong")
     private ExtendedWebElement displayInfoLabel;
 
