@@ -1,4 +1,4 @@
-package com.qaprosoft.carina.core.foundation.cucumber;
+package com.zebrunner.carina.cucumber;
 
 import java.util.Arrays;
 import java.util.Map;

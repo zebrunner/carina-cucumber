@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.qaprosoft.carina.core.foundation.cucumber;
+package com.zebrunner.carina.cucumber;
 
 import java.io.File;
 import java.lang.invoke.MethodHandles;
@@ -34,9 +34,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.qaprosoft.carina.core.foundation.AbstractTest;
 import com.zebrunner.agent.core.registrar.Artifact;
 import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
+import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.utils.Configuration;
 import com.zebrunner.carina.utils.R;
 import com.zebrunner.carina.utils.commons.SpecialKeywords;
