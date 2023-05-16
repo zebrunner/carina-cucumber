@@ -15,7 +15,7 @@
 		<guava.version>31.1-jre</guava.version>
 		<cucumber.testng.version>7.9.0</cucumber.testng.version>
 		<cucumber.java.version>7.9.0</cucumber.java.version>
-		<cucumber.reporting>5.7.1</cucumber.reporting>
+		<cucumber.reporting>5.7.5</cucumber.reporting>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
