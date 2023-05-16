@@ -7,8 +7,38 @@
 	<artifactId>carina-cucumber</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
+
 	<name>Carina Cucumber</name>
-	<description />
+	<description>Carina Cucumber module for web, mobile testing.</description>
+	<url>https://www.carina-core.io/</url>
+
+	<licenses>
+		<license>
+			<name>Apache Software License v2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Vadim Delendik</name>
+			<email>vdelendik@zebrunner.com</email>
+			<organization>Zebrunner</organization>
+			<organizationUrl>https://zebrunner.com</organizationUrl>
+		</developer>
+		<developer>
+			<name>Andrei Kamarouski</name>
+			<email>akamarouski@zebrunner.com</email>
+			<organization>Zebrunner</organization>
+			<organizationUrl>https://zebrunner.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<url>https://github.com/zebrunner/carina-cucumber.git</url>
+	</scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>11</java.version>
