@@ -3,7 +3,7 @@
 #set( $symbol_escape = '\' )
 package ${package}.carina.demo;
 
-import com.qaprosoft.carina.core.foundation.cucumber.CucumberBaseTest;
+import com.zebrunner.carina.cucumber.CucumberBaseTest;
 
 import io.cucumber.testng.CucumberOptions;
 

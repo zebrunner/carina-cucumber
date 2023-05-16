@@ -10,7 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 
-import com.qaprosoft.carina.core.foundation.cucumber.CucumberRunner;
+import com.zebrunner.carina.cucumber.CucumberRunner;
 import ${package}.carina.demo.gui.components.NewsItem;
 import ${package}.carina.demo.gui.pages.HomePage;
 import ${package}.carina.demo.gui.pages.NewsPage;
