@@ -5,7 +5,6 @@
   <groupId>com.qaprosoft</groupId>
   <artifactId>carina-cucumber-archetype</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>maven-archetype</packaging>
   <url>https://zebrunner.com</url>
   <name>carina-cucumber-archetype</name>
   <description>Carina Cucumber Archetype</description>
@@ -30,23 +29,6 @@
   </scm>
 
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.archetype</groupId>
-        <artifactId>archetype-packaging</artifactId>
-        <version>3.0.1</version>
-      </extension>
-    </extensions>
-
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-archetype-plugin</artifactId>
-          <version>3.2.1</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -72,15 +54,20 @@
   </build>
 
   <distributionManagement>
-      <repository>
-          <id>QPS_Nexus</id>
-          <name>Qaprosoft Releases</name>
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-      </repository>
-      <snapshotRepository>
-          <id>QPS_Nexus</id>
-          <name>Qaprosoft Snapshots</name>
-          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      </snapshotRepository>
+    <relocation>
+      <groupId>com.zebrunner</groupId>
+      <artifactId>carina-cucumber-archetype</artifactId>
+      <version>1.0.0</version>
+    </relocation>
+    <repository>
+      <id>QPS_Nexus</id>
+      <name>Qaprosoft Releases</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>QPS_Nexus</id>
+      <name>Qaprosoft Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
   </distributionManagement>
 </project>
