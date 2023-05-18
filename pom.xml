@@ -42,9 +42,10 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>11</java.version>
+		<carina-core.version>1.0.1</carina-core.version>
 		<guava.version>31.1-jre</guava.version>
-		<cucumber.testng.version>7.9.0</cucumber.testng.version>
-		<cucumber.java.version>7.9.0</cucumber.java.version>
+		<cucumber.testng.version>7.12.0</cucumber.testng.version>
+		<cucumber.java.version>7.12.0</cucumber.java.version>
 		<cucumber.reporting>5.7.5</cucumber.reporting>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -96,8 +97,19 @@
 		<dependency>
 			<groupId>com.zebrunner</groupId>
 			<artifactId>carina-core</artifactId>
-			<version>1.0.0</version>
+			<version>${carina-core.version}</version>
 		</dependency>
+
+		<!-- For selenim-remote-driver:
+        Caused by: java.lang.NoClassDefFoundError: io/netty/handler/codec/DefaultHeaders$ValueValidator
+        todo remove netty from carina-api (carina-proxy)
+-->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-codec-http</artifactId>
+			<version>4.1.84.Final</version>
+		</dependency>
+
 	</dependencies>
 
 	<profiles>
