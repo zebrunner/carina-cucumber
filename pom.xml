@@ -42,7 +42,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>11</java.version>
-		<carina-core.version>1.0.1</carina-core.version>
+		<carina-core.version>1.0.2</carina-core.version>
 		<guava.version>31.1-jre</guava.version>
 		<cucumber.testng.version>7.12.0</cucumber.testng.version>
 		<cucumber.java.version>7.12.0</cucumber.java.version>
@@ -54,9 +54,9 @@
 		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 	</properties>
-	<repositories>
-		<!-- Uncomment only for testing any SNAPSHOT version of carina! -->
-		<!--repository>
+	<!-- Uncomment only for testing any SNAPSHOT version of carina! -->
+	<!--repositories>
+		<repository>
 			<id>zebrunner_snapshots</id>
 			<name>zebrunner Snapshots</name>
 			<url>https://nexus.zebrunner.dev/repository/ce-snapshots/</url>
@@ -66,8 +66,8 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository-->
-	</repositories>
+		</repository>
+	</repositories-->
 	<dependencies>
 		<!-- We should set correct version of guava for Selenium. Copied from the carina-webdriver -->
 		<dependency>
