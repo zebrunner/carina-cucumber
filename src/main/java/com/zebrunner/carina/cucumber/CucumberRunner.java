@@ -163,8 +163,8 @@ public abstract class CucumberRunner extends AbstractTest {
                 ReportBuilder reportBuilder = new ReportBuilder(list, configuration);
                 reportBuilder.generateReports();
 
-                if (!Configuration.isNull(Configuration.Parameter.REPORT_URL)) {
-                    String reportUrl = Configuration.get(Configuration.Parameter.REPORT_URL);
+                if (!Configuration.isNull(Configuration.Parameter.CI_BUILD_URL)) {
+                    String reportUrl = Configuration.get(Configuration.Parameter.CI_BUILD_URL);
                     if (reportUrl.endsWith(ZAFIRA_REPORT_CI)) {
                         Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, reportUrl.replace(ZAFIRA_REPORT_CI, CUCUMBER_REPORT_CI));
                     } else {
