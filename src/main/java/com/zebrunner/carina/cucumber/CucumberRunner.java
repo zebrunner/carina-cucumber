@@ -34,12 +34,14 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.zebrunner.agent.core.config.ConfigurationHolder;
 import com.zebrunner.agent.core.registrar.Artifact;
 import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
 import com.zebrunner.carina.core.AbstractTest;
-import com.zebrunner.carina.utils.Configuration;
-import com.zebrunner.carina.utils.R;
+import com.zebrunner.carina.core.config.ReportConfiguration;
+import com.zebrunner.carina.cucumber.config.CucumberConfiguration;
 import com.zebrunner.carina.utils.commons.SpecialKeywords;
+import com.zebrunner.carina.utils.config.Configuration;
 import com.zebrunner.carina.utils.report.ReportContext;
 
 import io.cucumber.testng.FeatureWrapper;
@@ -83,7 +85,7 @@ public abstract class CucumberRunner extends AbstractTest {
         } else {
             testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper.getFeatureWrapper());
         }
-        if(R.CONFIG.getBoolean("custom_testdir_naming")) {
+        if (Configuration.getRequired(CucumberConfiguration.Parameter.CUSTOM_TESTDIR_NAMING, Boolean.class)) {
             ReportContext.setCustomTestDirName(testName);
         }
         testNamesList.add(testName);
@@ -129,9 +131,7 @@ public abstract class CucumberRunner extends AbstractTest {
      * Generate Cucumber Report
      */
     private void generateCucumberReport() {
-        String buildNumber = Configuration.get(Configuration.Parameter.APP_VERSION);
         try {
-            // String RootDir = System.getProperty("user.dir");
             File file = ReportContext.getBaseDir();
             File reportOutputDirectory = new File(String.format("%s/%s", file, SpecialKeywords.CUCUMBER_REPORT_FOLDER));
             File dir = new File("target/");
@@ -141,36 +141,33 @@ public abstract class CucumberRunner extends AbstractTest {
                 LOGGER.info("Report json: {}", fl.getName());
                 list.add("target/" + fl.getName());
             }
-            // buildNumber should be parsable Integer
-            buildNumber = buildNumber.replace(".", "").replace(",", "");
 
             if (!list.isEmpty()) {
-                // String buildNumber = "1";
-                // String buildProject = "CUCUMBER";
-                // boolean skippedFails = true;
-                // boolean pendingFails = true;
-                // boolean undefinedFails = true;
-                // boolean missingFails = true;
-
                 net.masterthought.cucumber.Configuration configuration = new net.masterthought.cucumber.Configuration(reportOutputDirectory,
                         "Cucumber Test Results");
                 // configuration.setStatusFlags(skippedFails, pendingFails, undefinedFails, missingFails);
                 // configuration.setParallelTesting(parallelTesting);
                 // configuration.setJenkinsBasePath(jenkinsBasePath);
                 // configuration.setRunWithJenkins(runWithJenkins);
-                configuration.setBuildNumber(buildNumber);
+
+                Configuration.get(ReportConfiguration.Parameter.APP_VERSION)
+                        // buildNumber should be parsable Integer
+                        .map(appVersion -> appVersion.replace(".", "").replace(",", ""))
+                        .ifPresent(configuration::setBuildNumber);
 
                 ReportBuilder reportBuilder = new ReportBuilder(list, configuration);
                 reportBuilder.generateReports();
 
-                if (!Configuration.isNull(Configuration.Parameter.CI_BUILD_URL)) {
-                    String reportUrl = Configuration.get(Configuration.Parameter.CI_BUILD_URL);
-                    if (reportUrl.endsWith(ZAFIRA_REPORT_CI)) {
-                        Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, reportUrl.replace(ZAFIRA_REPORT_CI, CUCUMBER_REPORT_CI));
-                    } else {
-                        Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ReportContext.getCucumberReportLink());
-                    }
-                }
+                Configuration.get(ReportConfiguration.Parameter.CI_BUILD_URL)
+                        .ifPresent(ciBuildURL -> {
+                            if (ConfigurationHolder.isReportingEnabled()) {
+                                if (ciBuildURL.endsWith(ZAFIRA_REPORT_CI)) {
+                                    Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ciBuildURL.replace(ZAFIRA_REPORT_CI, CUCUMBER_REPORT_CI));
+                                } else {
+                                    Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ReportConfiguration.getCucumberReportLink());
+                                }
+                            }
+                        });
             } else {
                 LOGGER.info("There are no json files for cucumber report.");
             }
