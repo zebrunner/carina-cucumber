@@ -6,8 +6,8 @@ package ${package}.carina.demo.gui.pages;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-import com.zebrunner.carina.utils.Configuration;
-import com.zebrunner.carina.utils.R;
+import com.zebrunner.carina.utils.config.Configuration;
+import com.zebrunner.carina.webdriver.config.WebDriverConfiguration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class HomePage extends AbstractPage {
     public HomePage(WebDriver driver) {
         super(driver);
         setUiLoadedMarker(newsColumn);
-        setPageAbsoluteURL(R.CONFIG.get(Configuration.Parameter.URL.getKey()));
+        setPageAbsoluteURL(Configuration.getRequired(WebDriverConfiguration.Parameter.URL));
     }
 
     public FooterMenu getFooterMenu() {
