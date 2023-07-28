@@ -31,41 +31,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.xml.XmlTest;
 
 import com.zebrunner.agent.core.config.ConfigurationHolder;
 import com.zebrunner.agent.core.registrar.Artifact;
 import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
-import com.zebrunner.carina.core.AbstractTest;
+import com.zebrunner.carina.core.IAbstractTest;
 import com.zebrunner.carina.core.config.ReportConfiguration;
 import com.zebrunner.carina.cucumber.config.CucumberConfiguration;
 import com.zebrunner.carina.utils.commons.SpecialKeywords;
 import com.zebrunner.carina.utils.config.Configuration;
 import com.zebrunner.carina.utils.report.ReportContext;
 
+import io.cucumber.testng.CucumberPropertiesProvider;
 import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
 import io.cucumber.testng.TestNGCucumberRunner;
 import net.masterthought.cucumber.ReportBuilder;
 
-public abstract class CucumberRunner extends AbstractTest {
+public abstract class CucumberRunner implements IAbstractTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final String STR_FORMAT_TEST_NAME = "%s (%s)";
     private static final String STR_FORMAT_TEST_FOLDER_NAME = "%s_%s";
-    private static final String EXAMPLE_FILE_NAME_FORMAT = "_ex%04d";
-    private static final String EXAMPLE_FILE_NAME_REGEX = "(_ex\\d+){0,1}";
     private static final String EXAMPLE_TEST_NAME_FORMAT = " EX%04d";
     private static final String EXAMPLE_TEST_NAME_REGEX = "( EX\\d+){0,1}";
     private static final String CUCUMBER_REPORT_NAME = "Cucumber report";
     private static final String ZAFIRA_REPORT_CI = "ZafiraReport";
-    private static final String CUCUMBER_REPORT_CI = "CucumberReport";
     private TestNGCucumberRunner testNGCucumberRunner;
-    List<String> testNamesList = Collections.synchronizedList(new ArrayList<String>());
+    List<String> testNamesList = Collections.synchronizedList(new ArrayList<>());
 
-    protected CucumberRunner() {
-        this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
+    @BeforeClass(alwaysRun = true)
+    public void setUpClass(ITestContext context) {
+        XmlTest currentXmlTest = context.getCurrentXmlTest();
+        CucumberPropertiesProvider properties = currentXmlTest::getParameter;
+        testNGCucumberRunner = new TestNGCucumberRunner(this.getClass(), properties);
         TestNameResolverRegistry.set(new CucumberNameResolver());
     }
 
@@ -162,7 +165,7 @@ public abstract class CucumberRunner extends AbstractTest {
                         .ifPresent(ciBuildURL -> {
                             if (ConfigurationHolder.isReportingEnabled()) {
                                 if (ciBuildURL.endsWith(ZAFIRA_REPORT_CI)) {
-                                    Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ciBuildURL.replace(ZAFIRA_REPORT_CI, CUCUMBER_REPORT_CI));
+                                    Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ciBuildURL.replace(ZAFIRA_REPORT_CI, "CucumberReport"));
                                 } else {
                                     Artifact.attachReferenceToTestRun(CUCUMBER_REPORT_NAME, ReportConfiguration.getCucumberReportLink());
                                 }
