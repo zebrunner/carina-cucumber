@@ -1,7 +1,5 @@
 package com.zebrunner.carina.cucumber.config;
 
-import java.util.Optional;
-
 import com.zebrunner.carina.utils.config.Configuration;
 import com.zebrunner.carina.utils.config.IParameter;
 
@@ -27,11 +25,8 @@ public class CucumberConfiguration extends Configuration {
 
     @Override
     public String toString() {
-        Optional<String> asString = asString(Parameter.values());
-        if (asString.isEmpty()) {
-            return "";
-        }
-        return "\n============= Cucumber configuration ==============\n" +
-                asString.get();
+        return asString(Parameter.values())
+                .map(s -> "\n============= Cucumber configuration ==============\n" + s)
+                .orElse("");
     }
 }
