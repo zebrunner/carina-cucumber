@@ -27,22 +27,10 @@ import com.zebrunner.carina.webdriver.Screenshot;
 import com.zebrunner.carina.webdriver.ScreenshotType;
 
 import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 
 public class CucumberBaseTest extends CucumberRunner {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-    /**
-     * Check is it Cucumber Test or not.
-     *
-     * @throws Throwable java.lang.Throwable
-     */
-    @Before
-    public void beforeScenario() throws Throwable {
-        LOGGER.info("CucumberBaseTest->beforeScenario");
-    }
 
     /**
      * take Screenshot Of Failure - this step should be added manually in common step definition
