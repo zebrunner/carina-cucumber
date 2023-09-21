@@ -21,11 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zebrunner.carina.cucumber.config.CucumberConfiguration;
+import io.cucumber.testng.CucumberPropertiesProvider;
 import io.cucumber.testng.Pickle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -42,6 +44,7 @@ import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
 import io.cucumber.testng.TestNGCucumberRunner;
 import net.masterthought.cucumber.ReportBuilder;
+import org.testng.xml.XmlTest;
 
 public abstract class CucumberRunner extends AbstractTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -51,7 +54,6 @@ public abstract class CucumberRunner extends AbstractTest {
     private TestNGCucumberRunner testNGCucumberRunner;
 
     protected CucumberRunner() {
-        this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
         TestNameResolverRegistry.set(new CucumberNameResolver());
     }
 
@@ -69,6 +71,13 @@ public abstract class CucumberRunner extends AbstractTest {
     @Deprecated(forRemoval = true, since = "1.1.5")
     public void setTestNGCucumberRunner(TestNGCucumberRunner testNGCucumberRunner) {
         this.testNGCucumberRunner = testNGCucumberRunner;
+    }
+
+    @BeforeClass(alwaysRun = true)
+    public void setUpClass(ITestContext context) {
+        XmlTest currentXmlTest = context.getCurrentXmlTest();
+        CucumberPropertiesProvider properties = currentXmlTest::getParameter;
+        testNGCucumberRunner = new TestNGCucumberRunner(this.getClass(), properties);
     }
 
     @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
