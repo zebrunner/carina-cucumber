@@ -18,19 +18,16 @@ package com.zebrunner.carina.cucumber;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import com.zebrunner.carina.cucumber.config.CucumberConfiguration;
+import io.cucumber.testng.CucumberPropertiesProvider;
+import io.cucumber.testng.Pickle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -39,7 +36,6 @@ import com.zebrunner.agent.core.registrar.Artifact;
 import com.zebrunner.agent.testng.core.testname.TestNameResolverRegistry;
 import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.core.config.ReportConfiguration;
-import com.zebrunner.carina.cucumber.config.CucumberConfiguration;
 import com.zebrunner.carina.utils.commons.SpecialKeywords;
 import com.zebrunner.carina.utils.config.Configuration;
 import com.zebrunner.carina.utils.report.ReportContext;
@@ -48,81 +44,72 @@ import io.cucumber.testng.FeatureWrapper;
 import io.cucumber.testng.PickleWrapper;
 import io.cucumber.testng.TestNGCucumberRunner;
 import net.masterthought.cucumber.ReportBuilder;
+import org.testng.xml.XmlTest;
 
 public abstract class CucumberRunner extends AbstractTest {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final String STR_FORMAT_TEST_NAME = "%s (%s)";
-    private static final String STR_FORMAT_TEST_FOLDER_NAME = "%s_%s";
-    private static final String EXAMPLE_FILE_NAME_FORMAT = "_ex%04d";
-    private static final String EXAMPLE_FILE_NAME_REGEX = "(_ex\\d+){0,1}";
-    private static final String EXAMPLE_TEST_NAME_FORMAT = " EX%04d";
-    private static final String EXAMPLE_TEST_NAME_REGEX = "( EX\\d+){0,1}";
     private static final String CUCUMBER_REPORT_NAME = "Cucumber report";
     private static final String ZAFIRA_REPORT_CI = "ZafiraReport";
     private static final String CUCUMBER_REPORT_CI = "CucumberReport";
     private TestNGCucumberRunner testNGCucumberRunner;
-    List<String> testNamesList = Collections.synchronizedList(new ArrayList<String>());
 
     protected CucumberRunner() {
-        this.testNGCucumberRunner = new TestNGCucumberRunner(this.getClass());
         TestNameResolverRegistry.set(new CucumberNameResolver());
     }
 
+    /**
+     * @deprecated useless method
+     */
+    @Deprecated(forRemoval = true, since = "1.1.5")
     public TestNGCucumberRunner getTestNGCucumberRunner() {
         return testNGCucumberRunner;
     }
 
+    /**
+     * @deprecated useless method
+     */
+    @Deprecated(forRemoval = true, since = "1.1.5")
     public void setTestNGCucumberRunner(TestNGCucumberRunner testNGCucumberRunner) {
         this.testNGCucumberRunner = testNGCucumberRunner;
     }
 
-    @Test(groups = {"cucumber"}, description = "Runs Cucumber Feature", dataProvider = "features")
-    public void feature(PickleWrapper pickleWrapper, FeatureWrapperCustomName featureWrapper, String providerTestName) {
-        String testName;
-        if (StringUtils.isNoneBlank(providerTestName)) {
-            testName = providerTestName;
-        } else {
-            testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_FOLDER_NAME, pickleWrapper, featureWrapper.getFeatureWrapper());
-        }
+    @BeforeClass(alwaysRun = true)
+    public void setUpClass(ITestContext context) {
+        XmlTest currentXmlTest = context.getCurrentXmlTest();
+        CucumberPropertiesProvider properties = currentXmlTest::getParameter;
+        testNGCucumberRunner = new TestNGCucumberRunner(this.getClass(), properties);
+    }
+
+    @Test(groups = { "cucumber" }, description = "Runs Cucumber Feature", dataProvider = "features")
+    public void feature(PickleWrapper pickleWrapper, FeatureWrapper featureWrapper, @SuppressWarnings("unused") String uniqueId) {
         if (Configuration.getRequired(CucumberConfiguration.Parameter.CUSTOM_TESTDIR_NAMING, Boolean.class)) {
-            ReportContext.setCustomTestDirName(testName);
+            ReportContext.setCustomTestDirName(
+                    CucumberNameResolver.generateTestName(pickleWrapper, featureWrapper, this.testNGCucumberRunner.provideScenarios().length));
         }
-        testNamesList.add(testName);
         this.testNGCucumberRunner.runScenario(pickleWrapper.getPickle());
-        // think about catching IllegalStateException
     }
 
     @DataProvider(parallel = true)
     public Object[][] features(ITestContext context) {
-        Object[][] scenarios = this.testNGCucumberRunner.provideScenarios();
-        Object[][] result = new Object[scenarios.length][1];
-        Map<String, String> testNameArgsMap = Collections.synchronizedMap(new HashMap<>());
-        for (int i = 0; i < scenarios.length; i++) {
-            Object[] scenario = scenarios[i];
-            result[i] = new Object[3];
-            result[i][0] = scenario[0];
-            result[i][1] = new FeatureWrapperCustomName((FeatureWrapper) scenario[1]);
-            final String testName = CucumberNameResolver.prepareTestName(STR_FORMAT_TEST_NAME, (PickleWrapper) scenario[0],
-                    (FeatureWrapper) scenario[1]);
-            List<String> exampleNums = testNameArgsMap.values().stream().filter(s -> s.matches(Pattern.quote(testName) + EXAMPLE_TEST_NAME_REGEX))
-                    .collect(Collectors.toList());
-            if (!exampleNums.isEmpty()) {
-                String newTestName = testName.concat(String.format(EXAMPLE_TEST_NAME_FORMAT, exampleNums.size() + 1));
-                result[i][2] = newTestName;
-                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), newTestName);
-            } else {
-                result[i][2] = testName;
-                testNameArgsMap.put(String.valueOf(Arrays.hashCode(result[i])), testName);
-            }
+        context.setAttribute(CucumberNameResolver.SCENARIO_COUNT_PARAMETER, this.testNGCucumberRunner.provideScenarios().length);
+        Object[][] parameters = testNGCucumberRunner.provideScenarios();
+        Object[][] newParams = new Object[parameters.length][1];
+        for (int i = 0; i < parameters.length; i++) {
+            newParams[i] = new Object[3];
+            newParams[i][0] = parameters[i][0];
+            newParams[i][1] = parameters[i][1];
+
+            PickleWrapper pickleWrapper = (PickleWrapper) parameters[i][0];
+            Pickle pickle = pickleWrapper.getPickle();
+            // set unique id for correct reporting (it guarantee that same test will be used for rerunning (retry)
+            newParams[i][2] = String.format("%s.%s.%s.%s", pickle.getUri(), pickle.getScenarioLine(), pickle.getLine(), pickle.getName());
         }
-        context.setAttribute(SpecialKeywords.TEST_NAME_ARGS_MAP, testNameArgsMap);
-        return result;
+        return newParams;
     }
 
     @AfterClass
-    public void tearDownClass(ITestContext context) throws Exception {
-        LOGGER.info("In  @AfterClass tearDownClass");
+    public void tearDownClass(ITestContext context) {
+        LOGGER.info("Finishing test execution and generating Cucumber report.");
         this.testNGCucumberRunner.finish();
         generateCucumberReport();
     }
