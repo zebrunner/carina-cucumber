@@ -42,7 +42,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>11</java.version>
-		<carina-core.version>1.2.6</carina-core.version>
+		<carina-core.version>1.2.7</carina-core.version>
 		<guava.version>32.1.2-jre</guava.version>
 		<cucumber.testng.version>7.15.0</cucumber.testng.version>
 		<cucumber.java.version>7.15.0</cucumber.java.version>
