@@ -2,6 +2,12 @@
 
 Carina-cucumber is independent [Carina](https://github.com/zebrunner/carina) module that supports [Behaviour-Driven Development (BDD)](https://cucumber.io/docs/bdd)
 
+Feel free to support the development with a [**donation**](https://www.paypal.com/donate/?hosted_button_id=MNHYYCYHAKUVA) for the next improvements.
+
+<p align="center">
+  <a href="https://zebrunner.com/"><img alt="Zebrunner" src="https://github.com/zebrunner/zebrunner/raw/master/docs/img/zebrunner_intro.png"></a>
+</p>
+
 ## Documentation and free support
 * [User Guide](https://zebrunner.github.io/carina/cucumber/)
 * [Demo project](https://github.com/zebrunner/carina-demo)
